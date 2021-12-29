@@ -1,0 +1,66 @@
+Chanha Kim
+
+Contributions: I worked on this project individually. 
+
+Part (b): Best Cache!
+
+While writing the code, I was thinking about what would be the best combination of policies along with the cache paramters (I decided that important cache parameters are associativity and total cache size).
+
+First off, out of four cache configurations regarding write hit and write policy, I narrowed down the candidates to only two of them:
+Choice 1)Write Through & No Write Allocate
+Choice 2)Write Back & Write Allocate.
+
+The other two configurations were discarded because first,  write-through and write-allocate was inefficient in thatbringing a block to cache on a miss is very wasteful since the next hit to this block will gerenrate a write to mainmemory anyways. Second, the write-back with no-write-allocate was inefficient in that if there are subsequent writes to the same block, the same block will generate misses indefinietly if the original block caused a miss.
+
+
+So, I designed following experiments to choose my best cache parameters.
+
+Experiment 1)LRU, or FIFO?
+./csim 256 4 16 write-allocate write-back lru vs. fifo
+Total cycles: LRU: 9344483
+      	      FIFO: 9845283
+
+./csim 256 8 16 write-allocate write-back lru vs. fifo
+Total cycles: LRU: 8562483
+      	      FIFO: 8830083
+
+./csim.128 8 16 write-allocate write-back lru vs. fifo
+Total cycles: LRU: 9277638 
+	      FIFO: 9781683
+
+...and so on, and I varied cache paramters as well, and I obtained a result that on average, the FIFO eviction policy has a higher number of total cycles than that of LRU, signifying that the LRU eviction should be used for higher efficiency. This makes sense in that although some block came into cache a long time ago, if it's freqeuntly used, then it should not be evicted, since it is likely that it will be used again. (Temporal Locality !!)
+
+Experiment 2) Which Block Size and Cache Size?
+Varying a block size, given Cache size of 1K, 4K, 16K, 64K, and 256K and observed resulting miss rates and clock cycles, for Choice 1 and 2.
+
+Block Size(rows)
+Total Cache Capacity (cols)
+Miss rates: array element
+     1K	    4K	  16K	64K	256K
+16   15%    8%	  4%	2%	1%
+32   13%    7%	  3%	1%	0.7%
+64   14%    7%	  3% 	1%	0.5%
+128  17%    8%	  3%	1%	0.49%
+256  22%    9.5%  3.3%	1%	0.49%
+
+
+It is evident from the above table that the HIGHER associativity improves cache miss rates!
+However, it is inevitable that the greater associativity causes an increase in hit time...
+
+Another result is that the larger cache block size increases miss rate! So, we don't necessarily always want the cache blocks to be large, since the large block size -> less number of blocks -> increase in miss penalty!
+
+Experiment 2 conclusion:
+If it takes a long time to process a miss -> go with large block size
+If it doesn't take too long to process a miss use small block sizes!
+
+Experiment 3: Writhe Through(WT) & No-Write-Allocate(NWA) vs. Write-Back(WB) & Write-Allocate(WA)
+I performed this experiment by keeping all the paramters same except the above cache-write polices and analyzed the resuling number of cycles. I performed the trials on about 20 randomly generated cache parameters, and ALMOST ALWAYS, the WB & WA combination had SIGNIFICANTLY less number of cycles than its counterpart. (Although, it seems that this difference becomes less significant as the cache size became smaller...)
+
+After performing Experiment 1, 2 and 3, it is clear that desigining most efficient cache parameters really depend on the hardware and usage of the cache! But, if I had to pick a single general purpose cache paramters, I would choose
+medium-sized, fully-associative or almost fully-associative, write-back, writh-allocate parameters.
+
+
+
+
+
+
