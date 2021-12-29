@@ -2,9 +2,9 @@ Chanha Kim
 
 Contributions: I worked on this project individually. 
 
-Part (b): Best Cache!
+I. Best Cache?!
 
-While writing the code, I was thinking about what would be the best combination of policies along with the cache paramters (I decided that important cache parameters are associativity and total cache size).
+While writing the code, I was thinking about what would be the best combination of policies along with the cache parameters (I decided that important cache parameters are associativity and total cache size).
 
 First off, out of four cache configurations regarding write hit and write policy, I narrowed down the candidates to only two of them:
 Choice 1)Write Through & No Write Allocate
